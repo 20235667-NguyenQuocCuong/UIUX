@@ -87,7 +87,7 @@ export function Dashboard() {
             </h2>
             <p className="mb-5 text-sm text-white/78">3 buổi học và 2 hạn nộp đang chờ bạn hoàn thành.</p>
             <Link to="/study-timer" className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-primary">
-              Bắt đầu tập trung
+              Bắt đầu phiên học
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
-import { Play, Pause, RotateCcw, Coffee, BookOpen, Award } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import { Play, Pause, RotateCcw, BookOpen, Award, Minus, Plus } from "lucide-react";
+import { motion } from "motion/react";
 import { useLanguage } from "../contexts/LanguageContext";
 
-type TimerMode = "focus" | "break" | "longBreak";
+const durationPresets = [15, 25, 45, 60];
+const minimumDuration = 5;
+const maximumDuration = 180;
 
 export function StudyTimer() {
   const { t } = useLanguage();
-  const [mode, setMode] = useState<TimerMode>("focus");
+  const [durationMinutes, setDurationMinutes] = useState(25);
   const [isRunning, setIsRunning] = useState(false);
   const [timeLeft, setTimeLeft] = useState(25 * 60); // 25 minutes in seconds
   const [sessionsCompleted, setSessionsCompleted] = useState(0);
@@ -16,12 +18,6 @@ export function StudyTimer() {
     sessions: 5,
     streak: 3,
   });
-
-  const durations = {
-    focus: 25 * 60,
-    break: 5 * 60,
-    longBreak: 15 * 60,
-  };
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -41,42 +37,28 @@ export function StudyTimer() {
 
   const handleTimerComplete = () => {
     setIsRunning(false);
-    if (mode === "focus") {
-      const newSessions = sessionsCompleted + 1;
-      setSessionsCompleted(newSessions);
-      setTodayStats((stats) => ({
-        ...stats,
-        totalMinutes: stats.totalMinutes + 25,
-        sessions: stats.sessions + 1,
-      }));
-      
-      // After 4 focus sessions, take a long break
-      if (newSessions % 4 === 0) {
-        setMode("longBreak");
-        setTimeLeft(durations.longBreak);
-      } else {
-        setMode("break");
-        setTimeLeft(durations.break);
-      }
-    } else {
-      setMode("focus");
-      setTimeLeft(durations.focus);
-    }
+    setSessionsCompleted((completed) => completed + 1);
+    setTodayStats((stats) => ({
+      ...stats,
+      totalMinutes: stats.totalMinutes + durationMinutes,
+      sessions: stats.sessions + 1,
+    }));
+    setTimeLeft(durationMinutes * 60);
   };
 
   const toggleTimer = () => {
-    setIsRunning(!isRunning);
+    setIsRunning((running) => !running);
   };
 
   const resetTimer = () => {
     setIsRunning(false);
-    setTimeLeft(durations[mode]);
+    setTimeLeft(durationMinutes * 60);
   };
 
-  const switchMode = (newMode: TimerMode) => {
-    setMode(newMode);
-    setTimeLeft(durations[newMode]);
-    setIsRunning(false);
+  const changeDuration = (minutes: number) => {
+    const nextDuration = Math.min(maximumDuration, Math.max(minimumDuration, minutes));
+    setDurationMinutes(nextDuration);
+    setTimeLeft(nextDuration * 60);
   };
 
   const formatTime = (seconds: number) => {
@@ -87,7 +69,7 @@ export function StudyTimer() {
       .padStart(2, "0")}`;
   };
 
-  const progress = ((durations[mode] - timeLeft) / durations[mode]) * 100;
+  const progress = ((durationMinutes * 60 - timeLeft) / (durationMinutes * 60)) * 100;
 
   const container = {
     hidden: { opacity: 0 },
@@ -118,59 +100,60 @@ export function StudyTimer() {
         animate="show"
         className="space-y-5"
       >
-        {/* Mode Selector */}
-        <motion.div variants={item} className="segment-bar" role="tablist" aria-label="Chế độ đồng hồ">
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={() => switchMode("focus")}
-            role="tab"
-            aria-selected={mode === "focus"}
-            className={`segment-item ${
-              mode === "focus"
-                ? "segment-item-active"
-                : ""
-            }`}
-          >
-            {t("timer.focus")}
-          </motion.button>
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={() => switchMode("break")}
-            role="tab"
-            aria-selected={mode === "break"}
-            className={`segment-item ${
-              mode === "break"
-                ? "segment-item-active"
-                : ""
-            }`}
-          >
-            {t("timer.break")}
-          </motion.button>
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={() => switchMode("longBreak")}
-            role="tab"
-            aria-selected={mode === "longBreak"}
-            className={`segment-item ${
-              mode === "longBreak"
-                ? "segment-item-active"
-                : ""
-            }`}
-          >
-            {t("timer.longBreak")}
-          </motion.button>
+        <motion.div variants={item} className="premium-card p-4">
+          <div className="mb-4 flex items-center justify-between">
+            <div>
+              <p className="section-label">Thời lượng phiên học</p>
+              <p className="mt-1 text-sm text-muted-foreground">Điều chỉnh trước khi bắt đầu</p>
+            </div>
+            <div className="flex items-center gap-1 rounded-2xl bg-muted/70 p-1">
+              <button
+                type="button"
+                onClick={() => changeDuration(durationMinutes - 5)}
+                disabled={isRunning || durationMinutes <= minimumDuration}
+                aria-label="Giảm 5 phút"
+                className="flex h-10 w-10 items-center justify-center rounded-xl text-primary transition-colors hover:bg-white disabled:text-muted-foreground"
+              >
+                <Minus className="h-4 w-4" />
+              </button>
+              <span className="min-w-[54px] text-center text-sm font-semibold text-foreground">
+                {durationMinutes} phút
+              </span>
+              <button
+                type="button"
+                onClick={() => changeDuration(durationMinutes + 5)}
+                disabled={isRunning || durationMinutes >= maximumDuration}
+                aria-label="Tăng 5 phút"
+                className="flex h-10 w-10 items-center justify-center rounded-xl text-primary transition-colors hover:bg-white disabled:text-muted-foreground"
+              >
+                <Plus className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+          <div className="grid grid-cols-4 gap-2" aria-label="Thời lượng đề xuất">
+            {durationPresets.map((minutes) => (
+              <button
+                key={minutes}
+                type="button"
+                onClick={() => changeDuration(minutes)}
+                disabled={isRunning}
+                aria-pressed={durationMinutes === minutes}
+                className={`h-10 rounded-xl text-sm font-medium transition-all ${
+                  durationMinutes === minutes
+                    ? "bg-primary text-white shadow-[0_8px_16px_rgba(102,87,245,0.22)]"
+                    : "bg-muted/70 text-muted-foreground hover:bg-primary/10 hover:text-primary"
+                }`}
+              >
+                {minutes}p
+              </button>
+            ))}
+          </div>
         </motion.div>
 
         {/* Timer Circle */}
         <motion.div
           variants={item}
-          className={`relative overflow-hidden rounded-[28px] p-7 shadow-[0_18px_42px_rgba(102,87,245,0.24)] ${
-            mode === "focus"
-              ? "bg-[linear-gradient(135deg,#6657F5,#A08CFB)]"
-              : mode === "break"
-              ? "bg-[linear-gradient(135deg,#27B47E,#64D3A7)]"
-              : "bg-[linear-gradient(135deg,#42A5F5,#9279FA)]"
-          }`}
+          className="relative overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,#6657F5,#A08CFB)] p-7 shadow-[0_18px_42px_rgba(102,87,245,0.24)]"
         >
           <div className="absolute -right-14 -top-14 h-40 w-40 rounded-full bg-white/10" />
           <div className="relative">
@@ -211,30 +194,18 @@ export function StudyTimer() {
 
             {/* Time Display */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={mode}
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.8, opacity: 0 }}
-                  className="text-center text-white"
+              <div className="text-center text-white">
+                <p
+                  className="mb-2 text-6xl font-semibold tracking-[-0.06em]"
+                  role="timer"
+                  aria-label={`${formatTime(timeLeft)} còn lại`}
                 >
-                  <p
-                    className="mb-2 text-6xl font-semibold tracking-[-0.06em]"
-                    role="timer"
-                    aria-label={`${formatTime(timeLeft)} còn lại`}
-                  >
-                    {formatTime(timeLeft)}
-                  </p>
-                  <p className="text-sm opacity-90">
-                    {mode === "focus"
-                      ? t("timer.timeToFocus")
-                      : mode === "break"
-                      ? t("timer.takeBreak")
-                      : t("timer.takeLongBreak")}
-                  </p>
-                </motion.div>
-              </AnimatePresence>
+                  {formatTime(timeLeft)}
+                </p>
+                <p className="text-sm opacity-90">
+                  {isRunning ? "Phiên học đang diễn ra" : "Sẵn sàng bắt đầu"}
+                </p>
+              </div>
             </div>
           </div>
 
@@ -264,11 +235,7 @@ export function StudyTimer() {
               aria-hidden="true"
               className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/14 backdrop-blur-sm"
             >
-              {mode === "focus" ? (
-                <BookOpen className="w-6 h-6 text-white" />
-              ) : (
-                <Coffee className="w-6 h-6 text-white" />
-              )}
+              <BookOpen className="w-6 h-6 text-white" />
             </div>
           </div>
         </motion.div>
@@ -279,7 +246,7 @@ export function StudyTimer() {
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">
-                {t("timer.pomodorosCompleted")}
+                {t("timer.completedSessions")}
               </span>
               <div className="flex items-center gap-2">
                 {[...Array(4)].map((_, i) => (
