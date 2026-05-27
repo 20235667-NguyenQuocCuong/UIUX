@@ -23,11 +23,7 @@ export function Settings() {
   const [isLinked, setIsLinked] = useState(false);
 
   const handleLinkAccount = () => {
-    // Mock linking - in real app would connect to university system
     setIsLinked(true);
-    setTimeout(() => {
-      alert("Đã kết nối thành công với hệ thống trường!");
-    }, 500);
   };
 
   const container = {
@@ -50,8 +46,10 @@ export function Settings() {
       {/* Header */}
       <div className="mb-7 flex items-center gap-4">
         <motion.button
+          type="button"
           whileTap={{ scale: 0.9 }}
           onClick={() => navigate("/profile")}
+          aria-label="Quay lại hồ sơ"
           className="rounded-2xl border border-border bg-white p-3 text-muted-foreground transition-colors hover:bg-muted"
         >
           <ChevronLeft className="w-6 h-6" />
@@ -103,7 +101,7 @@ export function Settings() {
                   {t("settings.autoSyncDesc")}
                 </p>
                 {isLinked ? (
-                  <div className="flex items-center gap-2 text-secondary">
+                  <div className="flex items-center gap-2 text-secondary" role="status">
                     <CheckCircle className="w-5 h-5" />
                     <span className="text-sm font-medium">
                       {t("settings.connected")}
@@ -111,6 +109,7 @@ export function Settings() {
                   </div>
                 ) : (
                   <motion.button
+                    type="button"
                     whileTap={{ scale: 0.98 }}
                     onClick={handleLinkAccount}
                     className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(102,87,245,0.2)]"
@@ -168,7 +167,11 @@ export function Settings() {
                     </p>
                   </div>
                 </div>
-                <div
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={deadlineNotifications}
+                  aria-label={t("settings.deadlineNotif")}
                   className={`w-12 h-7 rounded-full transition-colors cursor-pointer ${
                     deadlineNotifications ? "bg-primary" : "bg-switch-background"
                   }`}
@@ -179,7 +182,7 @@ export function Settings() {
                     transition={{ type: "spring", stiffness: 500, damping: 30 }}
                     className="w-5 h-5 bg-white rounded-full mt-1"
                   />
-                </div>
+                </button>
               </div>
             </div>
 
@@ -197,7 +200,11 @@ export function Settings() {
                     </p>
                   </div>
                 </div>
-                <div
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={classReminders}
+                  aria-label={t("settings.classReminders")}
                   className={`w-12 h-7 rounded-full transition-colors cursor-pointer ${
                     classReminders ? "bg-primary" : "bg-switch-background"
                   }`}
@@ -208,7 +215,7 @@ export function Settings() {
                     transition={{ type: "spring", stiffness: 500, damping: 30 }}
                     className="w-5 h-5 bg-white rounded-full mt-1"
                   />
-                </div>
+                </button>
               </div>
             </div>
 
@@ -224,6 +231,7 @@ export function Settings() {
                     {t("settings.notifTimingDesc")}
                   </p>
                   <select
+                    aria-label={t("settings.notifTiming")}
                     value={notificationTime}
                     onChange={(e) => setNotificationTime(e.target.value)}
                     className="field h-12 bg-muted/60 px-3"
@@ -255,6 +263,7 @@ export function Settings() {
                 </p>
               </div>
               <motion.button
+                type="button"
                 whileTap={{ scale: 0.95 }}
                 className="rounded-xl bg-primary/10 px-3 py-2 text-sm font-semibold text-primary"
               >

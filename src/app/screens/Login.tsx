@@ -42,6 +42,7 @@ export function Login() {
           {/* Social Login Buttons */}
           <div className="space-y-3 mb-6">
             <motion.button
+              type="button"
               whileTap={{ scale: 0.98 }}
               onClick={() => handleSocialLogin("Google")}
               className="secondary-action w-full gap-3 hover:bg-muted/70"
@@ -68,6 +69,7 @@ export function Login() {
             </motion.button>
 
             <motion.button
+              type="button"
               whileTap={{ scale: 0.98 }}
               onClick={() => handleSocialLogin("Microsoft")}
               className="secondary-action w-full gap-3 hover:bg-muted/70"
@@ -97,8 +99,9 @@ export function Login() {
           {/* Form */}
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-sm mb-2">{t("login.email")}</label>
+              <label htmlFor="login-email" className="block text-sm mb-2">{t("login.email")}</label>
               <input
+                id="login-email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -108,8 +111,9 @@ export function Login() {
             </div>
 
             <div>
-              <label className="block text-sm mb-2">{t("login.password")}</label>
+              <label htmlFor="login-password" className="block text-sm mb-2">{t("login.password")}</label>
               <input
+                id="login-password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}

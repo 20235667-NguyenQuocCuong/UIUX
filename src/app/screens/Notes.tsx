@@ -105,9 +105,11 @@ export function Notes() {
 
       {/* Search */}
       <div className="relative mb-5">
+        <label htmlFor="note-search" className="sr-only">{t("notes.search")}</label>
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
         <input
           type="text"
+          id="note-search"
           placeholder={t("notes.search")}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -118,10 +120,11 @@ export function Notes() {
       {/* Filters - Dropdown Style */}
       <div className="mb-6 grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs text-muted-foreground mb-1.5 px-1">
+          <label htmlFor="semester-filter" className="block text-xs text-muted-foreground mb-1.5 px-1">
             {t("notes.semester")}
           </label>
           <select
+            id="semester-filter"
             value={filterSemester}
             onChange={(e) => setFilterSemester(e.target.value)}
             className="field h-12 px-3"
@@ -136,10 +139,11 @@ export function Notes() {
         </div>
 
         <div>
-          <label className="block text-xs text-muted-foreground mb-1.5 px-1">
+          <label htmlFor="subject-filter" className="block text-xs text-muted-foreground mb-1.5 px-1">
             {t("notes.subject")}
           </label>
           <select
+            id="subject-filter"
             value={filterSubject}
             onChange={(e) => setFilterSubject(e.target.value)}
             className="field h-12 px-3"
@@ -154,6 +158,10 @@ export function Notes() {
         </div>
       </div>
 
+      <p className="mb-4 text-xs font-medium text-muted-foreground" role="status">
+        {filteredNotes.length} ghi chú được tìm thấy
+      </p>
+
       {/* Notes List */}
       <motion.div
         variants={container}
@@ -162,11 +170,12 @@ export function Notes() {
         className="space-y-4"
       >
         {filteredNotes.map((note, index) => (
-          <motion.div
+          <motion.button
+            type="button"
             key={index}
             variants={item}
             whileTap={{ scale: 0.98 }}
-            className="premium-card cursor-pointer p-5 transition-shadow hover:shadow-[0_14px_34px_rgba(28,22,70,0.10)]"
+            className="premium-card w-full cursor-pointer p-5 text-left transition-shadow hover:shadow-[0_14px_34px_rgba(28,22,70,0.10)]"
           >
             <div className="flex items-start gap-3 mb-3">
               <div className={`${note.color} w-1 h-16 rounded-full`} />
@@ -187,7 +196,7 @@ export function Notes() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </motion.button>
         ))}
       </motion.div>
 

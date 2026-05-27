@@ -24,9 +24,9 @@ export function AddDeadline() {
   ];
 
   const priorities = [
-    { labelKey: "deadlines.normal", value: "normal", color: "bg-accent" },
-    { labelKey: "deadlines.high", value: "high", color: "bg-warning" },
-    { labelKey: "deadlines.urgent", value: "urgent", color: "bg-destructive" },
+    { labelKey: "deadlines.normal", value: "normal", dot: "bg-accent", selected: "bg-accent/10 text-accent" },
+    { labelKey: "deadlines.high", value: "high", dot: "bg-warning", selected: "bg-warning/10 text-warning" },
+    { labelKey: "deadlines.urgent", value: "urgent", dot: "bg-destructive", selected: "bg-destructive/10 text-destructive" },
   ];
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -40,8 +40,10 @@ export function AddDeadline() {
       {/* Header */}
       <div className="mb-6 flex items-center gap-4">
         <motion.button
+          type="button"
           whileTap={{ scale: 0.9 }}
           onClick={() => navigate("/deadlines")}
+          aria-label="Quay lại danh sách hạn nộp"
           className="rounded-2xl border border-border bg-white p-3 text-muted-foreground transition-colors hover:bg-muted"
         >
           <ArrowLeft className="w-6 h-6" />
@@ -54,8 +56,9 @@ export function AddDeadline() {
 
       <form onSubmit={handleSubmit} className="premium-card space-y-5 p-5">
         <div>
-          <label className="block text-sm mb-2">{t("addDeadline.taskName")}</label>
+          <label htmlFor="task-name" className="block text-sm mb-2">{t("addDeadline.taskName")}</label>
           <input
+            id="task-name"
             type="text"
             value={taskName}
             onChange={(e) => setTaskName(e.target.value)}
@@ -66,8 +69,9 @@ export function AddDeadline() {
         </div>
 
         <div>
-          <label className="block text-sm mb-2">{t("addDeadline.subject")}</label>
+          <label htmlFor="subject" className="block text-sm mb-2">{t("addDeadline.subject")}</label>
           <select
+            id="subject"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
             className="field"
@@ -83,8 +87,9 @@ export function AddDeadline() {
         </div>
 
         <div>
-          <label className="block text-sm mb-2">{t("addDeadline.dueDate")}</label>
+          <label htmlFor="due-date" className="block text-sm mb-2">{t("addDeadline.dueDate")}</label>
           <input
+            id="due-date"
             type="date"
             value={dueDate}
             onChange={(e) => setDueDate(e.target.value)}
@@ -95,19 +100,22 @@ export function AddDeadline() {
 
         <div>
           <label className="block text-sm mb-3">{t("addDeadline.priority")}</label>
-          <div className="segment-bar">
+          <div className="segment-bar" role="radiogroup" aria-label={t("addDeadline.priority")}>
             {priorities.map((p) => (
               <motion.button
                 key={p.value}
                 type="button"
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setPriority(p.value)}
-                className={`segment-item ${
+                role="radio"
+                aria-checked={priority === p.value}
+                className={`segment-item flex items-center justify-center gap-2 ${
                   priority === p.value
-                    ? "segment-item-active"
+                    ? `${p.selected} shadow-sm`
                     : ""
                 }`}
               >
+                <span className={`h-2 w-2 rounded-full ${p.dot}`} />
                 {t(p.labelKey)}
               </motion.button>
             ))}
@@ -115,8 +123,9 @@ export function AddDeadline() {
         </div>
 
         <div>
-          <label className="block text-sm mb-2">{t("addDeadline.description")}</label>
+          <label htmlFor="description" className="block text-sm mb-2">{t("addDeadline.description")}</label>
           <textarea
+            id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder={t("addDeadline.descPlaceholder")}
@@ -126,7 +135,7 @@ export function AddDeadline() {
         </div>
 
         <div className="rounded-2xl border border-border bg-muted/45 p-4">
-          <label className="flex items-center justify-between cursor-pointer">
+          <label htmlFor="deadline-reminder" className="flex cursor-pointer items-center justify-between">
             <div>
               <p className="font-medium">{t("addDeadline.setReminder")}</p>
               <p className="text-sm text-muted-foreground">
@@ -134,6 +143,7 @@ export function AddDeadline() {
               </p>
             </div>
             <input
+              id="deadline-reminder"
               type="checkbox"
               checked={reminder}
               onChange={(e) => setReminder(e.target.checked)}

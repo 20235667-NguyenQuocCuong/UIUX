@@ -16,7 +16,7 @@ export function BottomNav() {
   ];
 
   return (
-    <nav className="px-4 pb-3 pt-2">
+    <nav aria-label="Điều hướng chính" className="px-4 pb-3 pt-2">
       <div className="rounded-[26px] border border-white/90 bg-white/90 px-2 py-2 shadow-[0_12px_36px_rgba(20,20,45,0.10)] backdrop-blur-xl">
         <div className="flex items-center justify-around gap-1">
           {navItems.map((item) => {
@@ -24,7 +24,12 @@ export function BottomNav() {
             const Icon = item.icon;
             
             return (
-              <Link key={item.path} to={item.path} className="flex-1">
+              <Link
+                key={item.path}
+                to={item.path}
+                aria-current={isActive ? "page" : undefined}
+                className="flex-1 rounded-[19px] focus-visible:ring-primary/20"
+              >
                 <motion.div
                   className="relative flex flex-col items-center gap-1.5 rounded-[19px] py-2"
                   whileTap={{ scale: 0.95 }}

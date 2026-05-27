@@ -40,6 +40,7 @@ export function FloatingActionButton() {
                   navigate(action.path);
                   setIsOpen(false);
                 }}
+                aria-label={t(action.labelKey)}
                 className="flex items-center gap-2 whitespace-nowrap rounded-2xl border border-white/90 bg-white px-4 py-3 text-sm font-semibold text-foreground shadow-[0_12px_32px_rgba(20,20,45,0.12)]"
               >
                 <action.icon className="h-4 w-4 text-primary" />
@@ -53,6 +54,8 @@ export function FloatingActionButton() {
       <motion.button
         whileTap={{ scale: 0.94 }}
         onClick={() => setIsOpen(!isOpen)}
+        aria-label={isOpen ? "Đóng menu tạo mới" : "Mở menu tạo mới"}
+        aria-expanded={isOpen}
         className="flex h-14 w-14 items-center justify-center rounded-full bg-[linear-gradient(135deg,#6657F5,#917BFB)] text-white shadow-[0_14px_28px_rgba(102,87,245,0.34)]"
       >
         <motion.div

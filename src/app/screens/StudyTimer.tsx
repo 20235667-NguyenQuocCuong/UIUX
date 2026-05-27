@@ -44,6 +44,11 @@ export function StudyTimer() {
     if (mode === "focus") {
       const newSessions = sessionsCompleted + 1;
       setSessionsCompleted(newSessions);
+      setTodayStats((stats) => ({
+        ...stats,
+        totalMinutes: stats.totalMinutes + 25,
+        sessions: stats.sessions + 1,
+      }));
       
       // After 4 focus sessions, take a long break
       if (newSessions % 4 === 0) {
@@ -114,10 +119,12 @@ export function StudyTimer() {
         className="space-y-5"
       >
         {/* Mode Selector */}
-        <motion.div variants={item} className="segment-bar">
+        <motion.div variants={item} className="segment-bar" role="tablist" aria-label="Chế độ đồng hồ">
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => switchMode("focus")}
+            role="tab"
+            aria-selected={mode === "focus"}
             className={`segment-item ${
               mode === "focus"
                 ? "segment-item-active"
@@ -129,6 +136,8 @@ export function StudyTimer() {
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => switchMode("break")}
+            role="tab"
+            aria-selected={mode === "break"}
             className={`segment-item ${
               mode === "break"
                 ? "segment-item-active"
@@ -140,6 +149,8 @@ export function StudyTimer() {
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => switchMode("longBreak")}
+            role="tab"
+            aria-selected={mode === "longBreak"}
             className={`segment-item ${
               mode === "longBreak"
                 ? "segment-item-active"
@@ -164,7 +175,15 @@ export function StudyTimer() {
           <div className="absolute -right-14 -top-14 h-40 w-40 rounded-full bg-white/10" />
           <div className="relative">
             {/* Progress Ring */}
-            <svg className="w-full h-auto" viewBox="0 0 200 200">
+            <svg
+              className="h-auto w-full"
+              viewBox="0 0 200 200"
+              role="progressbar"
+              aria-label="Tiến độ phiên học"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.round(progress)}
+            >
               <circle
                 cx="100"
                 cy="100"
@@ -194,13 +213,19 @@ export function StudyTimer() {
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={timeLeft}
+                  key={mode}
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.8, opacity: 0 }}
-                  className="text-white text-center"
+                  className="text-center text-white"
                 >
-                  <p className="mb-2 text-6xl font-semibold tracking-[-0.06em]">{formatTime(timeLeft)}</p>
+                  <p
+                    className="mb-2 text-6xl font-semibold tracking-[-0.06em]"
+                    role="timer"
+                    aria-label={`${formatTime(timeLeft)} còn lại`}
+                  >
+                    {formatTime(timeLeft)}
+                  </p>
                   <p className="text-sm opacity-90">
                     {mode === "focus"
                       ? t("timer.timeToFocus")
@@ -218,6 +243,7 @@ export function StudyTimer() {
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={resetTimer}
+              aria-label="Đặt lại đồng hồ"
               className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/14 backdrop-blur-sm"
             >
               <RotateCcw className="w-6 h-6 text-white" />
@@ -225,6 +251,7 @@ export function StudyTimer() {
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={toggleTimer}
+              aria-label={isRunning ? "Tạm dừng đồng hồ" : "Bắt đầu đồng hồ"}
               className="flex h-20 w-20 items-center justify-center rounded-full bg-white shadow-[0_14px_28px_rgba(28,22,70,0.16)]"
             >
               {isRunning ? (
@@ -233,8 +260,8 @@ export function StudyTimer() {
                 <Play className="w-8 h-8 text-primary ml-1" />
               )}
             </motion.button>
-            <motion.button
-              whileTap={{ scale: 0.9 }}
+            <div
+              aria-hidden="true"
               className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/14 backdrop-blur-sm"
             >
               {mode === "focus" ? (
@@ -242,7 +269,7 @@ export function StudyTimer() {
               ) : (
                 <Coffee className="w-6 h-6 text-white" />
               )}
-            </motion.button>
+            </div>
           </div>
         </motion.div>
 

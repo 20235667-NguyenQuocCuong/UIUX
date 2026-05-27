@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "motion/react";
 import { useLanguage } from "../contexts/LanguageContext";
+
+type EventType = "class" | "deadline" | "exam";
 
 export function Calendar() {
   const { t } = useLanguage();
   const [currentMonth] = useState("Tháng 3, 2026");
   const [selectedDate, setSelectedDate] = useState(26);
+  const [eventFilter, setEventFilter] = useState<"all" | EventType>("all");
 
   const daysOfWeek = [
     t("days.sun"),
@@ -59,28 +61,69 @@ export function Calendar() {
     { day: 31, hasEvent: false },
   ];
 
-  const getTodayEvents = () => [
-    {
-      type: "class",
-      title: t("subjects.dataStructures"),
-      time: "09:00 - 10:30",
-      color: "bg-purple-500",
-    },
-    {
-      type: "class",
-      title: t("subjects.webDevelopment"),
-      time: "11:00 - 12:30",
-      color: "bg-blue-500",
-    },
-    {
-      type: "deadline",
-      title: "Ôn tập kiểm tra",
-      time: t("calendar.dueToday"),
-      color: "bg-orange-500",
-    },
+  const eventsByDate: Record<number, { type: EventType; title: string; time: string; color: string }[]> = {
+    26: [
+      {
+        type: "class",
+        title: t("subjects.dataStructures"),
+        time: "09:00 - 10:30",
+        color: "bg-primary",
+      },
+      {
+        type: "class",
+        title: t("subjects.webDevelopment"),
+        time: "11:00 - 12:30",
+        color: "bg-accent",
+      },
+      {
+        type: "deadline",
+        title: "Ôn tập kiểm tra",
+        time: t("calendar.dueToday"),
+        color: "bg-warning",
+      },
+    ],
+    27: [
+      {
+        type: "exam",
+        title: "Kiểm tra Cấu trúc dữ liệu",
+        time: "08:00 - 09:00",
+        color: "bg-destructive",
+      },
+    ],
+    28: [
+      {
+        type: "deadline",
+        title: "Nộp đề xuất dự án",
+        time: "23:59",
+        color: "bg-warning",
+      },
+    ],
+  };
+
+  const filterOptions = [
+    { value: "all" as const, label: "Tất cả" },
+    { value: "class" as const, label: "Lớp học" },
+    { value: "exam" as const, label: "Kiểm tra" },
+    { value: "deadline" as const, label: "Hạn nộp" },
   ];
 
-  const todayEvents = getTodayEvents();
+  const selectedEvents = eventsByDate[selectedDate] ?? [];
+  const visibleEvents =
+    eventFilter === "all"
+      ? selectedEvents
+      : selectedEvents.filter((event) => event.type === eventFilter);
+
+  const typeLabel = (type: EventType) => {
+    if (type === "class") return t("calendar.class");
+    if (type === "exam") return "Kiểm tra";
+    return t("calendar.deadline");
+  };
+
+  const chipClass = (type: EventType) => {
+    if (type === "class") return "bg-primary/10 text-primary";
+    if (type === "exam") return "bg-destructive/10 text-destructive";
+    return "bg-warning/15 text-warning";
+  };
 
   return (
     <div className="app-screen">
@@ -92,15 +135,10 @@ export function Calendar() {
 
       {/* Calendar Card */}
       <div className="premium-card mb-6 p-5">
-        {/* Month Selector */}
-        <div className="flex items-center justify-between mb-6">
-          <motion.button whileTap={{ scale: 0.94 }} className="rounded-xl bg-muted p-2.5 text-muted-foreground">
-            <ChevronLeft className="w-5 h-5" />
-          </motion.button>
+        {/* Month Header */}
+        <div className="mb-6 flex items-center justify-between">
           <h3 className="text-base font-semibold">{currentMonth}</h3>
-          <motion.button whileTap={{ scale: 0.94 }} className="rounded-xl bg-muted p-2.5 text-muted-foreground">
-            <ChevronRight className="w-5 h-5" />
-          </motion.button>
+          <span className="soft-chip">Hôm nay</span>
         </div>
 
         {/* Days of Week */}
@@ -120,6 +158,8 @@ export function Calendar() {
               whileTap={{ scale: item.day ? 0.9 : 1 }}
               onClick={() => item.day && setSelectedDate(item.day)}
               disabled={!item.day}
+              aria-label={item.day ? `Ngày ${item.day}, tháng 3` : undefined}
+              aria-pressed={item.day === selectedDate}
               className={`relative flex aspect-square flex-col items-center justify-center rounded-xl text-sm font-medium transition-colors ${
                 item.day === selectedDate
                   ? "bg-primary text-white shadow-[0_8px_16px_rgba(102,87,245,0.28)]"
@@ -149,9 +189,30 @@ export function Calendar() {
 
       {/* Events for Selected Date */}
       <div>
-        <h3 className="section-label mb-4">{t("calendar.eventsFor")} {selectedDate}</h3>
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="section-label">{t("calendar.eventsFor")} {selectedDate}</h3>
+          <span className="text-xs font-medium text-muted-foreground">{selectedEvents.length} sự kiện</span>
+        </div>
+        <div className="scrollbar-hidden mb-4 flex gap-2 overflow-x-auto" role="tablist" aria-label="Lọc sự kiện">
+          {filterOptions.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              role="tab"
+              aria-selected={eventFilter === option.value}
+              onClick={() => setEventFilter(option.value)}
+              className={`whitespace-nowrap rounded-full px-3.5 py-2 text-xs font-semibold transition-colors ${
+                eventFilter === option.value
+                  ? "bg-primary text-white"
+                  : "border border-border bg-white text-muted-foreground"
+              }`}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
         <div className="space-y-3">
-          {todayEvents.map((event, index) => (
+          {visibleEvents.map((event, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, x: -20 }}
@@ -164,13 +225,17 @@ export function Calendar() {
                 <p className="font-medium mb-1">{event.title}</p>
                 <p className="text-sm text-muted-foreground">{event.time}</p>
               </div>
-              <span
-                className="soft-chip"
-              >
-                {event.type === "class" ? t("calendar.class") : t("calendar.deadline")}
+              <span className={`inline-flex rounded-full px-3 py-1.5 text-xs font-semibold ${chipClass(event.type)}`}>
+                {typeLabel(event.type)}
               </span>
             </motion.div>
           ))}
+          {visibleEvents.length === 0 && (
+            <div className="premium-card px-5 py-8 text-center" role="status">
+              <p className="text-sm font-medium text-foreground">Không có sự kiện phù hợp</p>
+              <p className="mt-1 text-xs text-muted-foreground">Chọn ngày hoặc loại sự kiện khác để xem lịch.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

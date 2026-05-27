@@ -127,12 +127,14 @@ export function GPA() {
         </motion.div>
 
         {/* Semester Filter */}
-        <motion.div variants={item} className="segment-bar">
+        <motion.div variants={item} className="segment-bar" role="tablist" aria-label="Chọn học kỳ">
           {["Học kỳ Xuân 2026", "Học kỳ Thu 2025"].map((option) => (
             <button
               key={option}
               type="button"
               onClick={() => setSemester(option)}
+              role="tab"
+              aria-selected={semester === option}
               className={`segment-item ${semester === option ? "segment-item-active" : ""}`}
             >
               {option}
@@ -146,6 +148,7 @@ export function GPA() {
             <TrendingUp className="w-5 h-5 text-primary" />
             {t("gpa.trend")}
           </h3>
+          <div role="img" aria-label="Biểu đồ xu hướng GPA từ học kỳ Thu 2025 đến Xuân 2026">
           <ResponsiveContainer width="100%" height={200}>
             <LineChart data={semesterData}>
               <CartesianGrid vertical={false} strokeDasharray="4 6" stroke="#eceef6" />
@@ -168,11 +171,13 @@ export function GPA() {
               />
             </LineChart>
           </ResponsiveContainer>
+          </div>
         </motion.div>
 
         {/* Grade Distribution */}
         <motion.div variants={item} className="premium-card p-5">
           <h3 className="section-label mb-4">{t("gpa.gradeDistribution")}</h3>
+          <div role="img" aria-label="Biểu đồ phân bổ điểm chữ">
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={gradeDistribution}>
               <CartesianGrid vertical={false} strokeDasharray="4 6" stroke="#eceef6" />
@@ -189,6 +194,7 @@ export function GPA() {
               <Bar dataKey="count" fill="#8978FC" radius={[10, 10, 10, 10]} />
             </BarChart>
           </ResponsiveContainer>
+          </div>
         </motion.div>
 
         {/* Subject Grades */}

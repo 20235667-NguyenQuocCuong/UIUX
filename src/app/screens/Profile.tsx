@@ -137,8 +137,12 @@ export function Profile() {
               return (
                 <motion.button
                   key={index}
+                  type="button"
                   whileTap={{ scale: 0.98 }}
                   onClick={item.action || undefined}
+                  role={item.toggle ? "switch" : undefined}
+                  aria-checked={item.toggle ? Boolean(item.value) : undefined}
+                  aria-label={item.label}
                   className={`w-full p-4 flex items-center gap-4 text-left ${
                     index < settingItems.length - 1 ? "border-b border-border" : ""
                   }`}
@@ -169,6 +173,7 @@ export function Profile() {
             })}
             {/* Link to full settings */}
             <motion.button
+              type="button"
               whileTap={{ scale: 0.98 }}
               onClick={() => navigate("/settings")}
               className="w-full p-4 flex items-center gap-4 text-left"
@@ -186,6 +191,7 @@ export function Profile() {
 
         {/* Logout */}
         <motion.button
+          type="button"
           variants={item}
           whileTap={{ scale: 0.98 }}
           onClick={handleLogout}

@@ -58,7 +58,7 @@ export function Dashboard() {
           <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Thứ Tư, 27 tháng 5</p>
           <h1 className="text-[28px] font-semibold tracking-[-0.04em]">{t("dashboard.goodMorning")}</h1>
         </div>
-        <Link to="/profile">
+        <Link to="/profile" aria-label="Mở hồ sơ cá nhân" className="rounded-2xl">
           <motion.div
             whileTap={{ scale: 0.95 }}
             className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-primary shadow-[0_8px_22px_rgba(26,22,54,0.08)]"
@@ -102,7 +102,7 @@ export function Dashboard() {
               </span>
               {t("dashboard.todaySchedule")}
             </h3>
-            <Link to="/calendar" className="text-xs font-semibold text-primary">
+            <Link to="/calendar" className="rounded-md text-xs font-semibold text-primary">
               {t("dashboard.viewAll")}
             </Link>
           </div>
@@ -130,7 +130,7 @@ export function Dashboard() {
               </span>
               {t("dashboard.upcomingDeadlines")}
             </h3>
-            <Link to="/deadlines" className="text-xs font-semibold text-primary">
+            <Link to="/deadlines" className="rounded-md text-xs font-semibold text-primary">
               {t("dashboard.viewAll")}
             </Link>
           </div>
