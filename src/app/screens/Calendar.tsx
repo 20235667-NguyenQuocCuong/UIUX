@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CalendarCheck, Clock, MapPin, Search, UserRound } from "lucide-react";
 import { motion } from "motion/react";
+import { useSearchParams } from "react-router";
 import { mockClasses, mockDeadlines, mockSemesters } from "../data/mockDb";
 
 type CalendarTab = "schedule" | "classes" | "deadlines";
@@ -41,9 +42,23 @@ const exams = [
 ];
 
 export function Calendar() {
-  const [activeTab, setActiveTab] = useState<CalendarTab>("schedule");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const getTabFromUrl = (): CalendarTab => {
+    const tab = searchParams.get("tab");
+    return tab === "classes" || tab === "deadlines" ? tab : "schedule";
+  };
+  const [activeTab, setActiveTab] = useState<CalendarTab>(getTabFromUrl);
   const [selectedDate, setSelectedDate] = useState(26);
   const [semester, setSemester] = useState("2026.2");
+
+  useEffect(() => {
+    setActiveTab(getTabFromUrl());
+  }, [searchParams]);
+
+  const handleTabChange = (tab: CalendarTab) => {
+    setActiveTab(tab);
+    setSearchParams(tab === "schedule" ? {} : { tab });
+  };
 
   const semesterClasses = mockClasses.filter((item) => item.semester === semester);
   const selectedClasses = semesterClasses.filter((item) => item.day === selectedDate);
@@ -94,7 +109,7 @@ export function Calendar() {
             type="button"
             role="tab"
             aria-selected={activeTab === value}
-            onClick={() => setActiveTab(value as CalendarTab)}
+            onClick={() => handleTabChange(value as CalendarTab)}
             className={`segment-item ${activeTab === value ? "segment-item-active" : ""}`}
           >
             {label}

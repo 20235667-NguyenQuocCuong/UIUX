@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 
 export function AddDeadline() {
   const navigate = useNavigate();
+  const deadlineTabPath = "/calendar?tab=deadlines";
   const [taskName, setTaskName] = useState("");
   const [subject, setSubject] = useState("");
   const [dueDate, setDueDate] = useState("");
@@ -29,7 +30,7 @@ export function AddDeadline() {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    navigate("/deadlines");
+    navigate(deadlineTabPath);
   };
 
   return (
@@ -38,7 +39,7 @@ export function AddDeadline() {
         <motion.button
           type="button"
           whileTap={{ scale: 0.9 }}
-          onClick={() => navigate("/deadlines")}
+          onClick={() => navigate(deadlineTabPath)}
           aria-label="Quay lại danh sách deadline"
           className="rounded-2xl border border-border bg-white p-3 text-muted-foreground transition-colors hover:bg-muted"
         >
@@ -148,7 +149,7 @@ export function AddDeadline() {
           <motion.button
             whileTap={{ scale: 0.98 }}
             type="button"
-            onClick={() => navigate("/deadlines")}
+            onClick={() => navigate(deadlineTabPath)}
             className="secondary-action flex-1"
           >
             Hủy

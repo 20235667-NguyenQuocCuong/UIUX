@@ -19,7 +19,7 @@ const featureGroups = [
       { label: "Thời khóa biểu", icon: CalendarDays, to: "/calendar", color: "bg-emerald-50 text-emerald-600" },
       { label: "Kết quả học tập", icon: GraduationCap, to: "/gpa", color: "bg-cyan-50 text-cyan-600" },
       { label: "Lịch thi", icon: CalendarDays, to: "/calendar", color: "bg-red-50 text-red-600" },
-      { label: "Deadline", icon: ClipboardList, to: "/deadlines", color: "bg-amber-50 text-amber-600" },
+      { label: "Deadline", icon: ClipboardList, to: "/calendar?tab=deadlines", color: "bg-amber-50 text-amber-600" },
     ],
   },
   {
@@ -101,14 +101,14 @@ export function Dashboard() {
 
         <div className="grid grid-cols-3 gap-3">
           {[
-            ["8", "Lớp tuần này", "text-primary"],
-            ["3.76", "GPA", "text-cyan-600"],
-            ["5", "Deadline", "text-accent"],
-          ].map(([value, label, color]) => (
-            <div key={label} className="premium-card px-2 py-4 text-center">
+            ["8", "Lớp tuần này", "text-primary", "/calendar"],
+            ["3.76", "GPA", "text-cyan-600", "/gpa"],
+            ["5", "Deadline", "text-accent", "/calendar?tab=deadlines"],
+          ].map(([value, label, color, to]) => (
+            <Link key={label} to={to} className="premium-card px-2 py-4 text-center transition-transform active:scale-[0.98]">
               <p className={`text-2xl font-semibold ${color}`}>{value}</p>
               <p className="mt-1 text-[11px] leading-4 text-muted-foreground">{label}</p>
-            </div>
+            </Link>
           ))}
         </div>
 
