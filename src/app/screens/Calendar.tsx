@@ -3,36 +3,49 @@ import { CalendarCheck, Clock, MapPin, Search, UserRound } from "lucide-react";
 import { motion } from "motion/react";
 import { mockClasses, mockSemesters } from "../data/mockDb";
 
-type CalendarTab = "schedule" | "classes" | "exams";
-type ExamFilter = "all" | "today" | "upcoming" | "past";
+type CalendarTab = "schedule" | "classes";
 
 const daysOfWeek = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
 const calendarDays = Array.from({ length: 30 }, (_, index) => index + 1);
-const exams: { title: string; date: string; status: Exclude<ExamFilter, "all"> }[] = [];
+const exams = [
+  {
+    id: "exam-uiux",
+    subject: "Giao diện và trải nghiệm người dùng",
+    code: "IT4441",
+    date: "Hôm nay",
+    time: "14:10 - 15:40",
+    room: "D9-501",
+  },
+  {
+    id: "exam-db",
+    subject: "Cơ sở dữ liệu",
+    code: "IT3090",
+    date: "28/03/2026",
+    time: "08:00 - 09:30",
+    room: "D5-203",
+  },
+];
 
 export function Calendar() {
   const [activeTab, setActiveTab] = useState<CalendarTab>("schedule");
   const [selectedDate, setSelectedDate] = useState(26);
   const [semester, setSemester] = useState("2026.2");
-  const [examFilter, setExamFilter] = useState<ExamFilter>("all");
 
   const semesterClasses = mockClasses.filter((item) => item.semester === semester);
   const selectedClasses = semesterClasses.filter((item) => item.day === selectedDate);
-  const visibleExams = examFilter === "all" ? exams : exams.filter((exam) => exam.status === examFilter);
 
   return (
     <div className="app-screen">
       <div className="mb-5 rounded-[28px] bg-[linear-gradient(135deg,#10B981,#06B6D4)] p-5 text-white shadow-[0_18px_38px_rgba(16,185,129,0.2)]">
         <p className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-white/80">UniMate</p>
         <h1 className="text-[28px] font-semibold tracking-[-0.035em]">Thời khóa biểu</h1>
-        <p className="mt-2 text-sm text-white/82">Theo dõi lớp học, danh sách lớp và lịch thi trong học kỳ {semester}.</p>
+        <p className="mt-2 text-sm text-white/82">Lớp học và lịch thi trong học kỳ {semester}.</p>
       </div>
 
       <div className="segment-bar mb-5" role="tablist" aria-label="Lịch học">
         {[
           ["schedule", "Thời khóa biểu"],
           ["classes", "Danh sách lớp"],
-          ["exams", "Lịch thi"],
         ].map(([value, label]) => (
           <button
             key={value}
@@ -86,6 +99,7 @@ export function Calendar() {
           </div>
 
           <ClassList title={`Lớp học ngày ${selectedDate}`} items={selectedClasses} />
+          <ExamList items={exams} />
         </motion.section>
       )}
 
@@ -96,39 +110,6 @@ export function Calendar() {
         </motion.section>
       )}
 
-      {activeTab === "exams" && (
-        <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
-          <SemesterSelect value={semester} onChange={setSemester} />
-          <div className="scrollbar-hidden flex gap-2 overflow-x-auto" role="tablist" aria-label="Lọc lịch thi">
-            {[
-              ["all", "Tất cả"],
-              ["today", "Hôm nay"],
-              ["upcoming", "Chưa tới"],
-              ["past", "Đã qua"],
-            ].map(([value, label]) => (
-              <button
-                key={value}
-                type="button"
-                onClick={() => setExamFilter(value as ExamFilter)}
-                className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold ${
-                  examFilter === value ? "bg-primary text-white" : "border border-border bg-white text-muted-foreground"
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-          {visibleExams.length === 0 && (
-            <div className="premium-card px-6 py-10 text-center" role="status">
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-3xl bg-emerald-50 text-primary">
-                <CalendarCheck className="h-7 w-7" />
-              </div>
-              <h2>Chưa có lịch thi</h2>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">Khi nhà trường công bố lịch thi, UniMate sẽ hiển thị tại đây.</p>
-            </div>
-          )}
-        </motion.section>
-      )}
     </div>
   );
 }
@@ -171,7 +152,7 @@ function ClassList({ title, items }: { title: string; items: typeof mockClasses 
             <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
               <Info icon={Clock} label={item.time} />
               <Info icon={MapPin} label={item.room} />
-              <Info icon={CalendarCheck} label={`${item.period} · Tuần ${item.week}`} />
+              <Info icon={CalendarCheck} label={`Tuần ${item.week}`} />
               <Info icon={UserRound} label={item.lecturer} />
             </div>
           </article>
@@ -179,6 +160,37 @@ function ClassList({ title, items }: { title: string; items: typeof mockClasses 
         {items.length === 0 && (
           <div className="premium-card p-6 text-center text-sm text-muted-foreground">Không có lớp trong học kỳ hoặc ngày đã chọn.</div>
         )}
+      </div>
+    </section>
+  );
+}
+
+function ExamList({ items }: { items: typeof exams }) {
+  return (
+    <section>
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="section-label">Lịch thi</h2>
+        <span className="text-xs font-semibold text-muted-foreground">{items.length} ca</span>
+      </div>
+      <div className="space-y-3">
+        {items.map((exam) => (
+          <article key={exam.id} className="premium-card p-4">
+            <div className="mb-3 flex items-start justify-between gap-3">
+              <div>
+                <span className="mb-2 inline-flex rounded-full bg-red-50 px-3 py-1 text-xs font-semibold text-red-600">
+                  {exam.date}
+                </span>
+                <h3>{exam.subject}</h3>
+                <p className="mt-1 text-sm font-semibold text-muted-foreground">{exam.code}</p>
+              </div>
+              <CalendarCheck className="mt-1 h-5 w-5 text-red-500" />
+            </div>
+            <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
+              <Info icon={Clock} label={exam.time} />
+              <Info icon={MapPin} label={exam.room} />
+            </div>
+          </article>
+        ))}
       </div>
     </section>
   );

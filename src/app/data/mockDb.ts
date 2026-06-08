@@ -77,7 +77,6 @@ export const mockClasses = [
     room: "D9-501",
     week: "40",
     lecturer: "TS. Nguyễn Minh Anh",
-    period: "Tiết 7 - 10",
   },
   {
     id: "it3090",
@@ -90,7 +89,6 @@ export const mockClasses = [
     room: "MS Teams",
     week: "40",
     lecturer: "ThS. Trần Bảo Nam",
-    period: "Tiết 12 - 13",
   },
   {
     id: "it4785",
@@ -103,7 +101,6 @@ export const mockClasses = [
     room: "D5-301",
     week: "40",
     lecturer: "PGS. Phạm Hoài Thu",
-    period: "Tiết 2 - 5",
   },
 ];
 

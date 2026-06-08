@@ -27,8 +27,8 @@ const subjectGrades = [
   {
     id: "web",
     subject: "Phát triển Web",
-    grade: "A-",
-    gpa: 3.7,
+    grade: "B+",
+    gpa: 3.5,
     credits: 3,
     semester: "2026.2",
     color: "bg-cyan-500",
@@ -54,8 +54,8 @@ const subjectGrades = [
   {
     id: "ai",
     subject: "Trí tuệ nhân tạo & học máy",
-    grade: "A-",
-    gpa: 3.7,
+    grade: "B+",
+    gpa: 3.5,
     credits: 4,
     semester: "2025.2",
     color: "bg-pink-500",
@@ -69,10 +69,9 @@ const semesterData = [
 ];
 
 const gradeDistribution = [
-  { id: "grade-a", grade: "A", count: 3 },
-  { id: "grade-a-minus", grade: "A-", count: 2 },
-  { id: "grade-b-plus", grade: "B+", count: 1 },
-  { id: "grade-b", grade: "B", count: 0 },
+  { id: "grade-a", grade: "A", "Tổng TC": 8 },
+  { id: "grade-b-plus", grade: "B+", "Tổng TC": 10 },
+  { id: "grade-b", grade: "B", "Tổng TC": 0 },
 ];
 
 export function GPA() {
@@ -81,18 +80,13 @@ export function GPA() {
 
   return (
     <div className="app-screen">
-      <div className="screen-heading">
-        <h1>Theo dõi GPA</h1>
-        <p className="text-muted-foreground">Theo dõi kết quả học tập theo học kỳ.</p>
-      </div>
-
       <motion.div initial="hidden" animate="show" className="space-y-5">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="gradient-card relative p-7">
           <div className="mb-6 flex items-start justify-between">
             <div>
               <p className="mb-2 text-sm opacity-90">GPA hiện tại</p>
               <p className="mb-2 text-5xl font-semibold tracking-[-0.06em]">3.76</p>
-              <p className="text-sm opacity-80">Học kỳ {semester} · thang điểm 4.0</p>
+              <p className="text-sm opacity-80">Học kỳ {semester}</p>
             </div>
             <Award className="h-12 w-12 opacity-80" />
           </div>
@@ -163,7 +157,7 @@ export function GPA() {
                     boxShadow: "0 10px 24px rgba(28,22,70,0.08)",
                   }}
                 />
-                <Bar dataKey="count" fill="#06B6D4" radius={[10, 10, 10, 10]} />
+                <Bar dataKey="Tổng TC" fill="#06B6D4" radius={[10, 10, 10, 10]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

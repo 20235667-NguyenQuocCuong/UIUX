@@ -19,6 +19,7 @@ const featureGroups = [
       { label: "Thời khóa biểu", icon: CalendarDays, to: "/calendar", color: "bg-emerald-50 text-emerald-600" },
       { label: "Kết quả học tập", icon: GraduationCap, to: "/gpa", color: "bg-cyan-50 text-cyan-600" },
       { label: "Lịch thi", icon: CalendarDays, to: "/calendar", color: "bg-red-50 text-red-600" },
+      { label: "Deadline", icon: ClipboardList, to: "/deadlines", color: "bg-amber-50 text-amber-600" },
     ],
   },
   {
@@ -27,7 +28,6 @@ const featureGroups = [
       { label: "Ghi chú", icon: NotebookPen, to: "/notes", color: "bg-teal-50 text-teal-600" },
       { label: "Hẹn giờ học", icon: Timer, to: "/study-timer", color: "bg-lime-50 text-lime-600" },
       { label: "GPA", icon: FileText, to: "/gpa", color: "bg-cyan-50 text-cyan-600" },
-      { label: "Deadline", icon: ClipboardList, to: "/deadlines", color: "bg-amber-50 text-amber-600" },
     ],
   },
 ];
@@ -103,7 +103,7 @@ export function Dashboard() {
           {[
             ["8", "Lớp tuần này", "text-primary"],
             ["3.76", "GPA", "text-cyan-600"],
-            ["5", "Việc cần làm", "text-accent"],
+            ["5", "Deadline", "text-accent"],
           ].map(([value, label, color]) => (
             <div key={label} className="premium-card px-2 py-4 text-center">
               <p className={`text-2xl font-semibold ${color}`}>{value}</p>
