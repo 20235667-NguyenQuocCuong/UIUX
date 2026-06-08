@@ -11,7 +11,7 @@ html {
 }
 
 body {
-  background: linear-gradient(180deg, #efecff 0%, #f6f7fc 32%, #f6f7fc 100%);
+  background: linear-gradient(180deg, #e6fffa 0%, #f8fafc 36%, #f8fafc 100%);
 }
 
 a,
@@ -37,7 +37,7 @@ button:disabled {
 
 @layer components {
   .app-screen {
-    @apply min-h-full px-5 pb-8 pt-6;
+    @apply min-h-full px-5 pb-28 pt-6;
   }
 
   .screen-heading {
@@ -53,7 +53,7 @@ button:disabled {
   }
 
   .premium-card {
-    @apply rounded-[24px] border border-white/80 bg-card;
+    @apply rounded-[24px] border border-white/90 bg-card;
     box-shadow: var(--shadow-card);
   }
 
@@ -64,8 +64,8 @@ button:disabled {
 
   .gradient-card {
     @apply overflow-hidden rounded-[26px] text-white;
-    background: linear-gradient(135deg, #6657f5 0%, #8978fc 55%, #b19af8 100%);
-    box-shadow: 0 18px 38px rgba(102, 87, 245, 0.25);
+    background: linear-gradient(135deg, #10b981 0%, #06b6d4 58%, #38bdf8 100%);
+    box-shadow: 0 18px 38px rgba(16, 185, 129, 0.22);
   }
 
   .section-label {
@@ -73,7 +73,7 @@ button:disabled {
   }
 
   .soft-chip {
-    @apply inline-flex items-center rounded-full bg-[#EEEAFE] px-3 py-1.5 text-xs font-medium text-primary;
+    @apply inline-flex items-center rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-medium text-primary;
   }
 
   .segment-bar {
@@ -95,8 +95,8 @@ button:disabled {
 
   .primary-action {
     @apply flex h-14 items-center justify-center rounded-2xl bg-primary px-5 text-sm font-semibold text-white transition-all hover:brightness-105 active:scale-[0.985];
-    background: linear-gradient(100deg, #6657f5, #8978fc);
-    box-shadow: 0 12px 24px rgba(102, 87, 245, 0.28);
+    background: linear-gradient(100deg, #10b981, #06b6d4);
+    box-shadow: 0 12px 24px rgba(16, 185, 129, 0.24);
   }
 
   .secondary-action {

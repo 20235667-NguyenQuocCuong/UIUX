@@ -23,8 +23,8 @@ export function Login() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[linear-gradient(180deg,#efecff_0%,#f6f7fc_38%,#f6f7fc_100%)] py-0 md:py-7">
-      <div className="flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-background px-6 md:min-h-[860px] md:rounded-[34px] md:border md:border-white/80 md:shadow-[0_24px_70px_rgba(34,25,76,0.14)]">
+    <div className="flex min-h-screen items-center justify-center bg-[linear-gradient(180deg,#dffcf4_0%,#f8fafc_38%,#eef6f7_100%)] py-0 md:py-7">
+      <div className="flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-background px-6 md:min-h-[860px] md:rounded-[34px] md:border md:border-white/90 md:shadow-[0_24px_70px_rgba(15,23,42,0.14)]">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -32,7 +32,7 @@ export function Login() {
         >
           {/* Logo */}
           <div className="mb-10 flex flex-col items-center">
-            <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-[26px] bg-[linear-gradient(135deg,#6657F5,#A18CFB)] shadow-[0_18px_36px_rgba(102,87,245,0.3)]">
+            <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-[26px] bg-[linear-gradient(135deg,#10B981,#06B6D4)] shadow-[0_18px_36px_rgba(16,185,129,0.26)]">
               <GraduationCap className="w-10 h-10 text-white" />
             </div>
             <h1 className="mb-2 text-center text-[30px] font-semibold tracking-[-0.045em]">{t("login.welcome")}</h1>

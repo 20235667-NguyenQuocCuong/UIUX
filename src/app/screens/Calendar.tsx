@@ -1,243 +1,194 @@
 import { useState } from "react";
+import { CalendarCheck, Clock, MapPin, Search, UserRound } from "lucide-react";
 import { motion } from "motion/react";
-import { useLanguage } from "../contexts/LanguageContext";
+import { mockClasses, mockSemesters } from "../data/mockDb";
 
-type EventType = "class" | "deadline" | "exam";
+type CalendarTab = "schedule" | "classes" | "exams";
+type ExamFilter = "all" | "today" | "upcoming" | "past";
+
+const daysOfWeek = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
+const calendarDays = Array.from({ length: 30 }, (_, index) => index + 1);
+const exams: { title: string; date: string; status: Exclude<ExamFilter, "all"> }[] = [];
 
 export function Calendar() {
-  const { t } = useLanguage();
-  const [currentMonth] = useState("Tháng 3, 2026");
+  const [activeTab, setActiveTab] = useState<CalendarTab>("schedule");
   const [selectedDate, setSelectedDate] = useState(26);
-  const [eventFilter, setEventFilter] = useState<"all" | EventType>("all");
+  const [semester, setSemester] = useState("2026.2");
+  const [examFilter, setExamFilter] = useState<ExamFilter>("all");
 
-  const daysOfWeek = [
-    t("days.sun"),
-    t("days.mon"),
-    t("days.tue"),
-    t("days.wed"),
-    t("days.thu"),
-    t("days.fri"),
-    t("days.sat"),
-  ];
-  
-  // Mock calendar days for March 2026
-  const calendarDays = [
-    { day: null, hasEvent: false },
-    { day: null, hasEvent: false },
-    { day: null, hasEvent: false },
-    { day: null, hasEvent: false },
-    { day: null, hasEvent: false },
-    { day: null, hasEvent: false },
-    { day: 1, hasEvent: false },
-    { day: 2, hasEvent: true },
-    { day: 3, hasEvent: false },
-    { day: 4, hasEvent: false },
-    { day: 5, hasEvent: true },
-    { day: 6, hasEvent: false },
-    { day: 7, hasEvent: false },
-    { day: 8, hasEvent: false },
-    { day: 9, hasEvent: true },
-    { day: 10, hasEvent: false },
-    { day: 11, hasEvent: false },
-    { day: 12, hasEvent: true },
-    { day: 13, hasEvent: false },
-    { day: 14, hasEvent: false },
-    { day: 15, hasEvent: false },
-    { day: 16, hasEvent: true },
-    { day: 17, hasEvent: false },
-    { day: 18, hasEvent: false },
-    { day: 19, hasEvent: true },
-    { day: 20, hasEvent: false },
-    { day: 21, hasEvent: false },
-    { day: 22, hasEvent: false },
-    { day: 23, hasEvent: true },
-    { day: 24, hasEvent: false },
-    { day: 25, hasEvent: false },
-    { day: 26, hasEvent: true },
-    { day: 27, hasEvent: true },
-    { day: 28, hasEvent: true },
-    { day: 29, hasEvent: false },
-    { day: 30, hasEvent: true },
-    { day: 31, hasEvent: false },
-  ];
-
-  const eventsByDate: Record<number, { type: EventType; title: string; time: string; color: string }[]> = {
-    26: [
-      {
-        type: "class",
-        title: t("subjects.dataStructures"),
-        time: "09:00 - 10:30",
-        color: "bg-primary",
-      },
-      {
-        type: "class",
-        title: t("subjects.webDevelopment"),
-        time: "11:00 - 12:30",
-        color: "bg-accent",
-      },
-      {
-        type: "deadline",
-        title: "Ôn tập kiểm tra",
-        time: t("calendar.dueToday"),
-        color: "bg-warning",
-      },
-    ],
-    27: [
-      {
-        type: "exam",
-        title: "Kiểm tra Cấu trúc dữ liệu",
-        time: "08:00 - 09:00",
-        color: "bg-destructive",
-      },
-    ],
-    28: [
-      {
-        type: "deadline",
-        title: "Nộp đề xuất dự án",
-        time: "23:59",
-        color: "bg-warning",
-      },
-    ],
-  };
-
-  const filterOptions = [
-    { value: "all" as const, label: "Tất cả" },
-    { value: "class" as const, label: "Lớp học" },
-    { value: "exam" as const, label: "Kiểm tra" },
-    { value: "deadline" as const, label: "Hạn nộp" },
-  ];
-
-  const selectedEvents = eventsByDate[selectedDate] ?? [];
-  const visibleEvents =
-    eventFilter === "all"
-      ? selectedEvents
-      : selectedEvents.filter((event) => event.type === eventFilter);
-
-  const typeLabel = (type: EventType) => {
-    if (type === "class") return t("calendar.class");
-    if (type === "exam") return "Kiểm tra";
-    return t("calendar.deadline");
-  };
-
-  const chipClass = (type: EventType) => {
-    if (type === "class") return "bg-primary/10 text-primary";
-    if (type === "exam") return "bg-destructive/10 text-destructive";
-    return "bg-warning/15 text-warning";
-  };
+  const semesterClasses = mockClasses.filter((item) => item.semester === semester);
+  const selectedClasses = semesterClasses.filter((item) => item.day === selectedDate);
+  const visibleExams = examFilter === "all" ? exams : exams.filter((exam) => exam.status === examFilter);
 
   return (
     <div className="app-screen">
-      {/* Header */}
-      <div className="screen-heading">
-        <h1>{t("calendar.title")}</h1>
-        <p className="text-muted-foreground">{t("calendar.viewSchedule")}</p>
+      <div className="mb-5 rounded-[28px] bg-[linear-gradient(135deg,#10B981,#06B6D4)] p-5 text-white shadow-[0_18px_38px_rgba(16,185,129,0.2)]">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-white/80">UniMate</p>
+        <h1 className="text-[28px] font-semibold tracking-[-0.035em]">Thời khóa biểu</h1>
+        <p className="mt-2 text-sm text-white/82">Theo dõi lớp học, danh sách lớp và lịch thi trong học kỳ {semester}.</p>
       </div>
 
-      {/* Calendar Card */}
-      <div className="premium-card mb-6 p-5">
-        {/* Month Header */}
-        <div className="mb-6 flex items-center justify-between">
-          <h3 className="text-base font-semibold">{currentMonth}</h3>
-          <span className="soft-chip">Hôm nay</span>
-        </div>
-
-        {/* Days of Week */}
-        <div className="grid grid-cols-7 gap-2 mb-3">
-          {daysOfWeek.map((day) => (
-            <div key={day} className="text-center text-xs text-muted-foreground py-2">
-              {day}
-            </div>
-          ))}
-        </div>
-
-        {/* Calendar Grid */}
-        <div className="grid grid-cols-7 gap-2">
-          {calendarDays.map((item, index) => (
-            <motion.button
-              key={index}
-              whileTap={{ scale: item.day ? 0.9 : 1 }}
-              onClick={() => item.day && setSelectedDate(item.day)}
-              disabled={!item.day}
-              aria-label={item.day ? `Ngày ${item.day}, tháng 3` : undefined}
-              aria-pressed={item.day === selectedDate}
-              className={`relative flex aspect-square flex-col items-center justify-center rounded-xl text-sm font-medium transition-colors ${
-                item.day === selectedDate
-                  ? "bg-primary text-white shadow-[0_8px_16px_rgba(102,87,245,0.28)]"
-                  : item.day
-                  ? "hover:bg-muted"
-                  : ""
-              }`}
-            >
-              {item.day && (
-                <>
-                  <span>{item.day}</span>
-                  {item.hasEvent && (
-                    <div
-                      className={`absolute bottom-1 w-1 h-1 rounded-full ${
-                        item.day === selectedDate
-                          ? "bg-white"
-                          : "bg-primary"
-                      }`}
-                    />
-                  )}
-                </>
-              )}
-            </motion.button>
-          ))}
-        </div>
+      <div className="segment-bar mb-5" role="tablist" aria-label="Lịch học">
+        {[
+          ["schedule", "Thời khóa biểu"],
+          ["classes", "Danh sách lớp"],
+          ["exams", "Lịch thi"],
+        ].map(([value, label]) => (
+          <button
+            key={value}
+            type="button"
+            role="tab"
+            aria-selected={activeTab === value}
+            onClick={() => setActiveTab(value as CalendarTab)}
+            className={`segment-item ${activeTab === value ? "segment-item-active" : ""}`}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
-      {/* Events for Selected Date */}
-      <div>
-        <div className="mb-4 flex items-center justify-between">
-          <h3 className="section-label">{t("calendar.eventsFor")} {selectedDate}</h3>
-          <span className="text-xs font-medium text-muted-foreground">{selectedEvents.length} sự kiện</span>
-        </div>
-        <div className="scrollbar-hidden mb-4 flex gap-2 overflow-x-auto" role="tablist" aria-label="Lọc sự kiện">
-          {filterOptions.map((option) => (
-            <button
-              key={option.value}
-              type="button"
-              role="tab"
-              aria-selected={eventFilter === option.value}
-              onClick={() => setEventFilter(option.value)}
-              className={`whitespace-nowrap rounded-full px-3.5 py-2 text-xs font-semibold transition-colors ${
-                eventFilter === option.value
-                  ? "bg-primary text-white"
-                  : "border border-border bg-white text-muted-foreground"
-              }`}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-        <div className="space-y-3">
-          {visibleEvents.map((event, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="premium-card flex items-center gap-4 p-4"
-            >
-              <div className={`${event.color} w-1 h-12 rounded-full`} />
-              <div className="flex-1">
-                <p className="font-medium mb-1">{event.title}</p>
-                <p className="text-sm text-muted-foreground">{event.time}</p>
+      {activeTab === "schedule" && (
+        <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
+          <SemesterSelect value={semester} onChange={setSemester} />
+          <div className="premium-card p-5">
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <h2>Tháng 3, 2026</h2>
+                <p className="mt-1 text-sm text-muted-foreground">Chọn ngày để xem lớp học</p>
               </div>
-              <span className={`inline-flex rounded-full px-3 py-1.5 text-xs font-semibold ${chipClass(event.type)}`}>
-                {typeLabel(event.type)}
-              </span>
-            </motion.div>
-          ))}
-          {visibleEvents.length === 0 && (
-            <div className="premium-card px-5 py-8 text-center" role="status">
-              <p className="text-sm font-medium text-foreground">Không có sự kiện phù hợp</p>
-              <p className="mt-1 text-xs text-muted-foreground">Chọn ngày hoặc loại sự kiện khác để xem lịch.</p>
+              <span className="soft-chip">Hôm nay</span>
+            </div>
+            <div className="mb-3 grid grid-cols-7 gap-2 text-center text-xs font-semibold text-muted-foreground">
+              {daysOfWeek.map((day) => (
+                <span key={day} className="py-1">{day}</span>
+              ))}
+            </div>
+            <div className="grid grid-cols-7 gap-2">
+              {calendarDays.map((day) => {
+                const hasClass = semesterClasses.some((item) => item.day === day);
+                const isSelected = selectedDate === day;
+                return (
+                  <button
+                    key={day}
+                    type="button"
+                    onClick={() => setSelectedDate(day)}
+                    aria-pressed={isSelected}
+                    className={`relative flex aspect-square items-center justify-center rounded-2xl text-sm font-semibold transition-colors ${
+                      isSelected ? "bg-primary text-white shadow-[0_10px_20px_rgba(16,185,129,0.24)]" : "bg-muted/55 text-foreground"
+                    }`}
+                  >
+                    {day}
+                    {hasClass && <span className={`absolute bottom-1.5 h-1.5 w-1.5 rounded-full ${isSelected ? "bg-white" : "bg-primary"}`} />}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <ClassList title={`Lớp học ngày ${selectedDate}`} items={selectedClasses} />
+        </motion.section>
+      )}
+
+      {activeTab === "classes" && (
+        <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
+          <SemesterSelect value={semester} onChange={setSemester} />
+          <ClassList title={`Danh sách lớp học kỳ ${semester}`} items={semesterClasses} />
+        </motion.section>
+      )}
+
+      {activeTab === "exams" && (
+        <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
+          <SemesterSelect value={semester} onChange={setSemester} />
+          <div className="scrollbar-hidden flex gap-2 overflow-x-auto" role="tablist" aria-label="Lọc lịch thi">
+            {[
+              ["all", "Tất cả"],
+              ["today", "Hôm nay"],
+              ["upcoming", "Chưa tới"],
+              ["past", "Đã qua"],
+            ].map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setExamFilter(value as ExamFilter)}
+                className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold ${
+                  examFilter === value ? "bg-primary text-white" : "border border-border bg-white text-muted-foreground"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          {visibleExams.length === 0 && (
+            <div className="premium-card px-6 py-10 text-center" role="status">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-3xl bg-emerald-50 text-primary">
+                <CalendarCheck className="h-7 w-7" />
+              </div>
+              <h2>Chưa có lịch thi</h2>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">Khi nhà trường công bố lịch thi, UniMate sẽ hiển thị tại đây.</p>
             </div>
           )}
-        </div>
+        </motion.section>
+      )}
+    </div>
+  );
+}
+
+function SemesterSelect({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+  return (
+    <label className="block">
+      <span className="mb-1.5 block px-1 text-xs font-semibold text-muted-foreground">Học kỳ</span>
+      <select value={value} onChange={(event) => onChange(event.target.value)} className="field h-12">
+        {mockSemesters.map((semester) => (
+          <option key={semester} value={semester}>
+            {semester}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function ClassList({ title, items }: { title: string; items: typeof mockClasses }) {
+  return (
+    <section>
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="section-label">{title}</h2>
+        <span className="text-xs font-semibold text-muted-foreground">{items.length} lớp</span>
       </div>
+      <div className="space-y-3">
+        {items.map((item) => (
+          <article key={item.id} className="premium-card p-4">
+            <div className="mb-3 flex items-start justify-between gap-3">
+              <div>
+                <span className={`mb-2 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${item.mode === "Online" ? "bg-cyan-50 text-cyan-600" : "bg-emerald-50 text-primary"}`}>
+                  {item.mode}
+                </span>
+                <h3>{item.subject}</h3>
+                <p className="mt-1 text-sm font-semibold text-muted-foreground">{item.code}</p>
+              </div>
+              <Search className="mt-1 h-5 w-5 text-muted-foreground" />
+            </div>
+            <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
+              <Info icon={Clock} label={item.time} />
+              <Info icon={MapPin} label={item.room} />
+              <Info icon={CalendarCheck} label={`${item.period} · Tuần ${item.week}`} />
+              <Info icon={UserRound} label={item.lecturer} />
+            </div>
+          </article>
+        ))}
+        {items.length === 0 && (
+          <div className="premium-card p-6 text-center text-sm text-muted-foreground">Không có lớp trong học kỳ hoặc ngày đã chọn.</div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function Info({ icon: Icon, label }: { icon: typeof Clock; label: string }) {
+  return (
+    <div className="flex min-w-0 items-center gap-2 rounded-2xl bg-muted/55 px-3 py-2">
+      <Icon className="h-4 w-4 shrink-0 text-primary" />
+      <span className="truncate">{label}</span>
     </div>
   );
 }

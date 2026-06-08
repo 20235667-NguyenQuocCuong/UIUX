@@ -2,11 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { ArrowLeft } from "lucide-react";
 import { motion } from "motion/react";
-import { useLanguage } from "../contexts/LanguageContext";
 
 export function AddDeadline() {
   const navigate = useNavigate();
-  const { t } = useLanguage();
   const [taskName, setTaskName] = useState("");
   const [subject, setSubject] = useState("");
   const [dueDate, setDueDate] = useState("");
@@ -15,120 +13,116 @@ export function AddDeadline() {
   const [reminder, setReminder] = useState(true);
 
   const subjects = [
-    { key: "subjects.dataStructures", value: "Cấu Trúc Dữ Liệu" },
-    { key: "subjects.webDevelopment", value: "Phát Triển Web" },
-    { key: "subjects.database", value: "Hệ Quản Trị CSDL" },
-    { key: "subjects.mobile", value: "Lập Trình Di Động" },
-    { key: "subjects.ai", value: "Trí Tuệ Nhân Tạo & Học Máy" },
-    { key: "subjects.software", value: "Công Nghệ Phần Mềm" },
+    "Cấu trúc dữ liệu",
+    "Phát triển Web",
+    "Hệ quản trị CSDL",
+    "Lập trình di động",
+    "Trí tuệ nhân tạo & học máy",
+    "Công nghệ phần mềm",
   ];
 
   const priorities = [
-    { labelKey: "deadlines.normal", value: "normal", dot: "bg-accent", selected: "bg-accent/10 text-accent" },
-    { labelKey: "deadlines.high", value: "high", dot: "bg-warning", selected: "bg-warning/10 text-warning" },
-    { labelKey: "deadlines.urgent", value: "urgent", dot: "bg-destructive", selected: "bg-destructive/10 text-destructive" },
+    { label: "Bình thường", value: "normal", dot: "bg-accent", selected: "bg-accent/10 text-accent" },
+    { label: "Cao", value: "high", dot: "bg-warning", selected: "bg-warning/10 text-warning" },
+    { label: "Khẩn cấp", value: "urgent", dot: "bg-destructive", selected: "bg-destructive/10 text-destructive" },
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Mock save - navigate back
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
     navigate("/deadlines");
   };
 
   return (
     <div className="app-screen pb-6">
-      {/* Header */}
       <div className="mb-6 flex items-center gap-4">
         <motion.button
           type="button"
           whileTap={{ scale: 0.9 }}
           onClick={() => navigate("/deadlines")}
-          aria-label="Quay lại danh sách hạn nộp"
+          aria-label="Quay lại danh sách deadline"
           className="rounded-2xl border border-border bg-white p-3 text-muted-foreground transition-colors hover:bg-muted"
         >
-          <ArrowLeft className="w-6 h-6" />
+          <ArrowLeft className="h-6 w-6" />
         </motion.button>
         <div>
-          <h1 className="text-[26px] font-semibold tracking-[-0.04em]">{t("addDeadline.title")}</h1>
+          <h1 className="text-[26px] font-semibold tracking-[-0.04em]">Thêm deadline</h1>
           <p className="mt-1 text-sm text-muted-foreground">Lập kế hoạch để không bỏ lỡ công việc quan trọng.</p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="premium-card space-y-5 p-5">
         <div>
-          <label htmlFor="task-name" className="block text-sm mb-2">{t("addDeadline.taskName")}</label>
+          <label htmlFor="task-name" className="mb-2 block text-sm">Tên nhiệm vụ</label>
           <input
             id="task-name"
             type="text"
             value={taskName}
-            onChange={(e) => setTaskName(e.target.value)}
-            placeholder={t("addDeadline.taskPlaceholder")}
+            onChange={(event) => setTaskName(event.target.value)}
+            placeholder="VD: Bài tập thuật toán"
             className="field"
             required
           />
         </div>
 
         <div>
-          <label htmlFor="subject" className="block text-sm mb-2">{t("addDeadline.subject")}</label>
+          <label htmlFor="subject" className="mb-2 block text-sm">Môn học</label>
           <select
             id="subject"
             value={subject}
-            onChange={(e) => setSubject(e.target.value)}
+            onChange={(event) => setSubject(event.target.value)}
             className="field"
             required
           >
-            <option value="">{t("addDeadline.selectSubject")}</option>
-            {subjects.map((s) => (
-              <option key={s.value} value={s.value}>
-                {t(s.key)}
+            <option value="">Chọn môn học</option>
+            {subjects.map((item) => (
+              <option key={item} value={item}>
+                {item}
               </option>
             ))}
           </select>
         </div>
 
         <div>
-          <label htmlFor="due-date" className="block text-sm mb-2">{t("addDeadline.dueDate")}</label>
+          <label htmlFor="due-date" className="mb-2 block text-sm">Deadline</label>
           <input
             id="due-date"
             type="date"
             value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
+            onChange={(event) => setDueDate(event.target.value)}
             className="field"
             required
           />
         </div>
 
         <div>
-          <label className="block text-sm mb-3">{t("addDeadline.priority")}</label>
-          <div className="segment-bar" role="radiogroup" aria-label={t("addDeadline.priority")}>
-            {priorities.map((p) => (
+          <label className="mb-3 block text-sm">Độ ưu tiên</label>
+          <div className="segment-bar" role="radiogroup" aria-label="Độ ưu tiên">
+            {priorities.map((item) => (
               <motion.button
-                key={p.value}
+                key={item.value}
                 type="button"
                 whileTap={{ scale: 0.95 }}
-                onClick={() => setPriority(p.value)}
+                onClick={() => setPriority(item.value)}
                 role="radio"
-                aria-checked={priority === p.value}
+                aria-checked={priority === item.value}
                 className={`segment-item flex items-center justify-center gap-2 ${
-                  priority === p.value
-                    ? `${p.selected} shadow-sm`
-                    : ""
+                  priority === item.value ? `${item.selected} shadow-sm` : ""
                 }`}
               >
-                <span className={`h-2 w-2 rounded-full ${p.dot}`} />
-                {t(p.labelKey)}
+                <span className={`h-2 w-2 rounded-full ${item.dot}`} />
+                {item.label}
               </motion.button>
             ))}
           </div>
         </div>
 
         <div>
-          <label htmlFor="description" className="block text-sm mb-2">{t("addDeadline.description")}</label>
+          <label htmlFor="description" className="mb-2 block text-sm">Mô tả (tùy chọn)</label>
           <textarea
             id="description"
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder={t("addDeadline.descPlaceholder")}
+            onChange={(event) => setDescription(event.target.value)}
+            placeholder="Thêm ghi chú hoặc chi tiết..."
             rows={4}
             className="field h-auto min-h-28 resize-none py-4"
           />
@@ -137,16 +131,14 @@ export function AddDeadline() {
         <div className="rounded-2xl border border-border bg-muted/45 p-4">
           <label htmlFor="deadline-reminder" className="flex cursor-pointer items-center justify-between">
             <div>
-              <p className="font-medium">{t("addDeadline.setReminder")}</p>
-              <p className="text-sm text-muted-foreground">
-                {t("addDeadline.reminderDesc")}
-              </p>
+              <p className="font-medium">Đặt nhắc nhở</p>
+              <p className="text-sm text-muted-foreground">Nhận thông báo trước deadline</p>
             </div>
             <input
               id="deadline-reminder"
               type="checkbox"
               checked={reminder}
-              onChange={(e) => setReminder(e.target.checked)}
+              onChange={(event) => setReminder(event.target.checked)}
               className="h-5 w-5 accent-primary"
             />
           </label>
@@ -159,14 +151,10 @@ export function AddDeadline() {
             onClick={() => navigate("/deadlines")}
             className="secondary-action flex-1"
           >
-            {t("addDeadline.cancel")}
+            Hủy
           </motion.button>
-          <motion.button
-            whileTap={{ scale: 0.98 }}
-            type="submit"
-            className="primary-action flex-1"
-          >
-            {t("addDeadline.save")}
+          <motion.button whileTap={{ scale: 0.98 }} type="submit" className="primary-action flex-1">
+            Lưu deadline
           </motion.button>
         </div>
       </form>

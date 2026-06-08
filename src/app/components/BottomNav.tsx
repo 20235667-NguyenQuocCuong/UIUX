@@ -1,18 +1,16 @@
 import { Home, Timer, Calendar, FileText, TrendingUp } from "lucide-react";
 import { Link, useLocation } from "react-router";
 import { motion } from "motion/react";
-import { useLanguage } from "../contexts/LanguageContext";
 
 export function BottomNav() {
   const location = useLocation();
-  const { t } = useLanguage();
 
   const navItems = [
-    { path: "/", icon: Home, labelKey: "nav.dashboard" },
-    { path: "/study-timer", icon: Timer, labelKey: "nav.timer" },
-    { path: "/calendar", icon: Calendar, labelKey: "nav.calendar" },
-    { path: "/notes", icon: FileText, labelKey: "nav.notes" },
-    { path: "/gpa", icon: TrendingUp, labelKey: "nav.gpa" },
+    { path: "/", icon: Home, label: "Trang chủ" },
+    { path: "/study-timer", icon: Timer, label: "Đồng hồ" },
+    { path: "/calendar", icon: Calendar, label: "Lịch" },
+    { path: "/notes", icon: FileText, label: "Ghi chú" },
+    { path: "/gpa", icon: TrendingUp, label: "GPA" },
   ];
 
   return (
@@ -37,7 +35,7 @@ export function BottomNav() {
                   {isActive && (
                     <motion.div
                       layoutId="activeTab"
-                      className="absolute inset-0 rounded-[19px] bg-[#EEEAFE]"
+                      className="absolute inset-0 rounded-[19px] bg-emerald-50"
                       transition={{ type: "spring", stiffness: 400, damping: 34 }}
                     />
                   )}
@@ -51,7 +49,7 @@ export function BottomNav() {
                       isActive ? "font-semibold text-primary" : "font-medium text-muted-foreground"
                     }`}
                   >
-                    {t(item.labelKey)}
+                    {item.label}
                   </span>
                 </motion.div>
               </Link>
