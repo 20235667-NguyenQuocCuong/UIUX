@@ -1,4 +1,4 @@
-import { Calendar, ClipboardList, FileText, Home, Timer, TrendingUp } from "lucide-react";
+import { Calendar, FileText, Home, Timer, TrendingUp } from "lucide-react";
 import { Link, useLocation } from "react-router";
 import { motion } from "motion/react";
 
@@ -9,7 +9,6 @@ export function BottomNav() {
     { path: "/", icon: Home, label: "Trang chủ" },
     { path: "/study-timer", icon: Timer, label: "Đồng hồ" },
     { path: "/calendar", icon: Calendar, label: "Lịch" },
-    { path: "/deadlines", icon: ClipboardList, label: "Deadline" },
     { path: "/notes", icon: FileText, label: "Ghi chú" },
     { path: "/gpa", icon: TrendingUp, label: "GPA" },
   ];
