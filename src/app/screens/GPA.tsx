@@ -63,9 +63,9 @@ const subjectGrades = [
 ];
 
 const semesterData = [
-  { id: "2025-2", semester: "2025.2", gpa: 3.5 },
-  { id: "2026-1", semester: "2026.1", gpa: 3.62 },
-  { id: "2026-2", semester: "2026.2", gpa: 3.76 },
+  { id: "2025-2", semester: "2025.2", GPA: 3.5 },
+  { id: "2026-1", semester: "2026.1", GPA: 3.62 },
+  { id: "2026-2", semester: "2026.2", GPA: 3.76 },
 ];
 
 const gradeDistribution = [
@@ -135,7 +135,7 @@ export function GPA() {
                     boxShadow: "0 10px 24px rgba(28,22,70,0.08)",
                   }}
                 />
-                <Line type="monotone" dataKey="gpa" stroke="#10B981" strokeWidth={3} dot={{ fill: "#10B981", r: 5 }} />
+                <Line type="monotone" dataKey="GPA" stroke="#10B981" strokeWidth={3} dot={{ fill: "#10B981", r: 5 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
