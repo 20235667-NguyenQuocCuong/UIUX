@@ -74,13 +74,6 @@ const gradeDistribution = [
   { id: "grade-b", grade: "B", "Tổng TC": 0 },
 ];
 
-const classificationRanges = [
-  { label: "Xuất sắc", range: "3,60 - 4,00", active: true },
-  { label: "Giỏi", range: "3,20 - 3,59", active: false },
-  { label: "Khá", range: "2,50 - 3,19", active: false },
-  { label: "Trung bình", range: "2,00 - 2,49", active: false },
-];
-
 export function GPA() {
   const [semester, setSemester] = useState("2026.2");
   const visibleGrades = subjectGrades.filter((subject) => subject.semester === semester);
@@ -105,16 +98,8 @@ export function GPA() {
               className="h-full rounded-full bg-white"
             />
           </div>
-          <div className="mt-4 rounded-[18px] bg-white/16 p-3">
-            <p className="mb-2 text-sm font-semibold">Xếp loại: Xuất sắc</p>
-            <div className="grid grid-cols-2 gap-2 text-[11px] leading-4">
-              {classificationRanges.map((item) => (
-                <div key={item.label} className={`rounded-2xl px-3 py-2 ${item.active ? "bg-white text-primary" : "bg-white/10 text-white/82"}`}>
-                  <span className="block font-semibold">{item.label}</span>
-                  <span>{item.range}</span>
-                </div>
-              ))}
-            </div>
+          <div className="mt-4 inline-flex rounded-full bg-white/16 px-4 py-2 text-sm font-semibold">
+            Xếp loại: Xuất sắc
           </div>
         </motion.div>
 
