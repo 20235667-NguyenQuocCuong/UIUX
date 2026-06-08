@@ -74,6 +74,13 @@ const gradeDistribution = [
   { id: "grade-b", grade: "B", "Tổng TC": 0 },
 ];
 
+const classificationRanges = [
+  { label: "Xuất sắc", range: "3,60 - 4,00", active: true },
+  { label: "Giỏi", range: "3,20 - 3,59", active: false },
+  { label: "Khá", range: "2,50 - 3,19", active: false },
+  { label: "Trung bình", range: "2,00 - 2,49", active: false },
+];
+
 export function GPA() {
   const [semester, setSemester] = useState("2026.2");
   const visibleGrades = subjectGrades.filter((subject) => subject.semester === semester);
@@ -86,7 +93,7 @@ export function GPA() {
             <div>
               <p className="mb-2 text-sm opacity-90">GPA hiện tại</p>
               <p className="mb-2 text-5xl font-semibold tracking-[-0.06em]">3.76</p>
-              <p className="text-sm opacity-80">Học kỳ {semester}</p>
+              <p className="text-sm opacity-80">Học kỳ hiện tại: {semester}</p>
             </div>
             <Award className="h-12 w-12 opacity-80" />
           </div>
@@ -98,7 +105,17 @@ export function GPA() {
               className="h-full rounded-full bg-white"
             />
           </div>
-          <p className="mt-2 text-xs opacity-80">Kết quả học tập đang rất tốt.</p>
+          <div className="mt-4 rounded-[18px] bg-white/16 p-3">
+            <p className="mb-2 text-sm font-semibold">Xếp loại: Xuất sắc</p>
+            <div className="grid grid-cols-2 gap-2 text-[11px] leading-4">
+              {classificationRanges.map((item) => (
+                <div key={item.label} className={`rounded-2xl px-3 py-2 ${item.active ? "bg-white text-primary" : "bg-white/10 text-white/82"}`}>
+                  <span className="block font-semibold">{item.label}</span>
+                  <span>{item.range}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="segment-bar" role="tablist" aria-label="Chọn học kỳ">
