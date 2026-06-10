@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
-import { BookOpen, Flame, Pause, Play, RotateCcw, SlidersHorizontal } from "lucide-react";
+import { Pause, Play, RotateCcw } from "lucide-react";
 import { motion } from "motion/react";
 
 const durationPresets = [10, 15, 25, 45, 60];
@@ -13,12 +13,6 @@ export function StudyTimer() {
   const [isCustomOpen, setIsCustomOpen] = useState(false);
   const [customMinutes, setCustomMinutes] = useState("30");
   const [customError, setCustomError] = useState("");
-  const [stats, setStats] = useState({
-    totalMinutes: 127,
-    sessions: 5,
-    streak: 3,
-  });
-
   useEffect(() => {
     let interval: ReturnType<typeof setInterval> | null = null;
 
@@ -28,11 +22,6 @@ export function StudyTimer() {
 
     if (timeLeft === 0 && isRunning) {
       setIsRunning(false);
-      setStats((current) => ({
-        ...current,
-        totalMinutes: current.totalMinutes + durationMinutes,
-        sessions: current.sessions + 1,
-      }));
     }
 
     return () => {
@@ -107,23 +96,13 @@ export function StudyTimer() {
       <header className="mb-6 flex items-start justify-between gap-4">
         <div>
           <h1 className="text-[32px] font-semibold tracking-[-0.04em] text-foreground">Bấm giờ học</h1>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Tập trung học trong một phiên ngắn.</p>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Sẵn sàng chinh phục mục tiêu hôm nay.</p>
         </div>
-        <button
-          type="button"
-          onClick={() => setIsCustomOpen((open) => !open)}
-          className="flex h-11 items-center gap-2 rounded-full border border-border bg-white px-3.5 text-xs font-semibold text-muted-foreground shadow-[0_8px_20px_rgba(15,23,42,0.06)]"
-          aria-expanded={isCustomOpen}
-        >
-          <SlidersHorizontal className="h-4 w-4" />
-          Tùy chỉnh
-        </button>
       </header>
 
       <section className="premium-card mb-5 p-4">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="section-label">Chọn thời lượng</h2>
-          <span className="text-xs font-semibold text-muted-foreground">{durationMinutes} phút</span>
         </div>
         <div className="grid grid-cols-3 gap-2.5">
           {durationPresets.map((minutes) => (
@@ -231,28 +210,6 @@ export function StudyTimer() {
         </button>
       </div>
 
-      <section className="mb-5 grid grid-cols-3 gap-3">
-        <Stat icon={BookOpen} value={stats.totalMinutes} label="phút học" color="bg-emerald-50 text-primary" />
-        <Stat icon={Play} value={stats.sessions} label="phiên" color="bg-cyan-50 text-cyan-600" />
-        <Stat icon={Flame} value={stats.streak} label="ngày liền" color="bg-orange-50 text-accent" />
-      </section>
-
-      <section className="rounded-[24px] border border-emerald-100 bg-emerald-50/80 p-4">
-        <h2 className="mb-2 text-sm font-semibold text-foreground">Mẹo học tập</h2>
-        <p className="text-sm leading-6 text-muted-foreground">Đặt điện thoại xa tay và chỉ tập trung vào một việc trong phiên này.</p>
-      </section>
-    </div>
-  );
-}
-
-function Stat({ icon: Icon, value, label, color }: { icon: typeof BookOpen; value: number; label: string; color: string }) {
-  return (
-    <div className="premium-card px-2 py-4 text-center">
-      <div className={`mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-2xl ${color}`}>
-        <Icon className="h-5 w-5" />
-      </div>
-      <p className="text-xl font-semibold text-foreground">{value}</p>
-      <p className="mt-1 text-[11px] leading-4 text-muted-foreground">{label}</p>
     </div>
   );
 }

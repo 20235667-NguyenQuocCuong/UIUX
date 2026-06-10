@@ -85,7 +85,7 @@ export function Profile() {
               <User className="w-10 h-10" />
             </div>
             <div>
-              <h2 className="text-xl mb-1">Nguyễn Minh Anh</h2>
+              <h2 className="text-xl mb-1">Nguyễn Đức Anh</h2>
               <p className="text-sm opacity-90">Năm 2 • Khoa học máy tính</p>
             </div>
           </div>

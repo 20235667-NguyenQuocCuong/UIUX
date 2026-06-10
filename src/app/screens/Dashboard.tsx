@@ -1,16 +1,42 @@
-import { Bell, CalendarDays, ClipboardList, Clock, FileText, GraduationCap, NotebookPen, Timer, User } from "lucide-react";
+import { useState } from "react";
+import { Bell, CalendarDays, ChevronRight, ClipboardList, Code2, FileText, GraduationCap, MapPin, NotebookPen, Timer, User, UserRound } from "lucide-react";
 import { motion } from "motion/react";
 import { Link } from "react-router";
 
-const todayClass = {
-  mode: "Offline",
-  time: "14:10 - 17:30",
-  title: "166153 - Giao diện và trải nghiệm người dùng",
-  code: "IT4441",
-  room: "D9-501",
-  week: "40",
-  lecturer: "TS. Nguyễn Minh Anh",
-};
+const weekDays = [
+  { label: "Mo", date: "08" },
+  { label: "Tu", date: "09" },
+  { label: "We", date: "10", active: true },
+  { label: "Th", date: "11" },
+  { label: "Fr", date: "12" },
+  { label: "Sa", date: "13" },
+  { label: "Su", date: "14" },
+];
+
+const todayClasses = [
+  {
+    id: "jp2220",
+    mode: "Offline",
+    start: "10:15",
+    end: "11:45",
+    title: "166147 - Tiếng Nhật 8",
+    code: "JP2220",
+    location: "Sáng thứ 4, tiết 5-6, C7-217",
+    week: "40",
+    lecturer: "Nguyễn Linh Chi",
+  },
+  {
+    id: "jp3120",
+    mode: "Offline",
+    start: "14:10",
+    end: "17:30",
+    title: "166169 - Tiếng Nhật chuyên ngành 2",
+    code: "JP3120",
+    location: "Chiều thứ 4, tiết 3-6, B1-207",
+    week: "40",
+    lecturer: "Sato Yushi",
+  },
+];
 
 const featureGroups = [
   {
@@ -33,6 +59,7 @@ const featureGroups = [
 ];
 
 export function Dashboard() {
+  const [isScheduleCollapsed, setIsScheduleCollapsed] = useState(false);
   const today = new Intl.DateTimeFormat("vi-VN", {
     weekday: "long",
     day: "2-digit",
@@ -44,7 +71,7 @@ export function Dashboard() {
       <div className="mb-6 flex items-start justify-between">
         <div>
           <p className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-primary">{today}</p>
-          <h1 className="text-[28px] font-semibold tracking-[-0.035em]">Chào Đức Anh</h1>
+          <h1 className="text-[28px] font-semibold">Chào Nguyễn Đức Anh</h1>
           <p className="mt-1 text-sm text-muted-foreground">Sẵn sàng cho lịch học hôm nay.</p>
         </div>
         <div className="flex gap-2">
@@ -66,37 +93,67 @@ export function Dashboard() {
       </div>
 
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
-        <section className="gradient-card relative p-5">
-          <div className="absolute right-4 top-4 rounded-full bg-white/18 px-3 py-1 text-xs font-semibold">
-            Tuần {todayClass.week}
-          </div>
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/16 px-3 py-1.5 text-xs font-semibold">
-            <Clock className="h-4 w-4" />
-            Lịch học hôm nay
-          </div>
-          <div className="rounded-[22px] bg-white p-4 text-foreground shadow-[0_16px_34px_rgba(15,23,42,0.12)]">
-            <div className="mb-3 flex items-center justify-between">
-              <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-primary">
-                {todayClass.mode}
-              </span>
-              <span className="text-sm font-semibold text-cyan-600">{todayClass.time}</span>
+        <section className="rounded-[24px] bg-[linear-gradient(135deg,#10B981,#06B6D4)] p-3.5 text-white shadow-[0_18px_38px_rgba(16,185,129,0.2)]">
+          <div className={`${isScheduleCollapsed ? "" : "mb-3"} flex items-start justify-between gap-3`}>
+            <div>
+              <h2 className="text-[18px] font-semibold leading-tight">Lịch học tuần 40 (8-14/6/2026)</h2>
+              <p className="mt-1.5 text-[15px] font-medium text-white/85">Hôm nay có 2 lịch học</p>
             </div>
-            <h2 className="text-[18px] leading-snug tracking-[-0.015em]">{todayClass.title}</h2>
-            <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-              <div className="rounded-2xl bg-muted/70 p-3">
-                <p className="text-xs text-muted-foreground">Mã học phần</p>
-                <p className="mt-1 font-semibold">{todayClass.code}</p>
-              </div>
-              <div className="rounded-2xl bg-muted/70 p-3">
-                <p className="text-xs text-muted-foreground">Phòng</p>
-                <p className="mt-1 font-semibold">{todayClass.room}</p>
-              </div>
-              <div className="col-span-2 rounded-2xl bg-muted/70 p-3">
-                <p className="text-xs text-muted-foreground">Giảng viên</p>
-                <p className="mt-1 font-semibold">{todayClass.lecturer}</p>
-              </div>
-            </div>
+            <button
+              type="button"
+              aria-label={isScheduleCollapsed ? "Mở lịch học" : "Thu gọn lịch học"}
+              aria-expanded={!isScheduleCollapsed}
+              onClick={() => setIsScheduleCollapsed((collapsed) => !collapsed)}
+              className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white transition-colors hover:bg-white/15"
+            >
+              <ChevronRight className={`h-6 w-6 transition-transform ${isScheduleCollapsed ? "" : "rotate-90"}`} />
+            </button>
           </div>
+
+          {!isScheduleCollapsed && (
+            <>
+              <div className="grid grid-cols-7 border-b border-white/30 pb-2 text-center">
+                {weekDays.map((day) => (
+                  <div key={day.date} className="flex flex-col items-center gap-1.5">
+                    <span className="text-[13px] font-medium text-white/88">{day.label}</span>
+                    <span
+                      className={`flex h-8 w-8 items-center justify-center rounded-full text-[17px] font-medium ${
+                        day.active ? "bg-white text-primary" : "text-white"
+                      }`}
+                    >
+                      {day.date}
+                    </span>
+                    <span className="h-1.5 w-1.5 rounded-full bg-white/85" />
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-3 space-y-2.5">
+                {todayClasses.map((item) => (
+                  <article key={item.id} className="grid grid-cols-[88px_minmax(0,1fr)] rounded-2xl border border-slate-200 bg-white shadow-[0_6px_14px_rgba(15,23,42,0.04)]">
+                    <div className="flex flex-col justify-between px-3 py-3">
+                      <span className="text-[14px] font-semibold text-primary">{item.mode}</span>
+                      <div className="text-[18px] font-medium leading-tight text-foreground">
+                        <p>{item.start}</p>
+                        <p className="text-center text-slate-400">-</p>
+                        <p>{item.end}</p>
+                      </div>
+                    </div>
+
+                    <div className="border-l-[3px] border-primary px-3 py-3">
+                      <h3 className="mb-2 text-[15px] font-semibold leading-snug text-foreground">{item.title}</h3>
+                      <div className="space-y-1 text-[13px] leading-snug text-slate-700">
+                        <ScheduleInfo icon={Code2} label={`Mã học phần: ${item.code}`} />
+                        <ScheduleInfo icon={MapPin} label={item.location} />
+                        <ScheduleInfo icon={CalendarDays} label={`Tuần ${item.week}`} />
+                        <ScheduleInfo icon={UserRound} label={`Giảng viên: ${item.lecturer}`} />
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </>
+          )}
         </section>
 
         <div className="grid grid-cols-3 gap-3">
@@ -135,6 +192,15 @@ export function Dashboard() {
           </section>
         ))}
       </motion.div>
+    </div>
+  );
+}
+
+function ScheduleInfo({ icon: Icon, label }: { icon: typeof Code2; label: string }) {
+  return (
+    <div className="flex min-w-0 items-center gap-2">
+      <Icon className="h-4 w-4 shrink-0 text-slate-500" />
+      <span className="min-w-0">{label}</span>
     </div>
   );
 }
